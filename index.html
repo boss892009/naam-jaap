@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naam Jap</title>
+
+<style>
+:root{
+  --bg1:#020024;
+  --bg2:#090979;
+  --bg3:#001f3f;
+  --primary:#FFD700;
+  --secondary:#ff9f00;
+  --text:#ffffff;
+  --card-bg:rgba(255,255,255,0.08);
+  --glow:0 0 20px rgba(255,215,0,0.6);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+
+body{
+  min-height:100vh;
+  background:radial-gradient(circle at top,var(--bg2),var(--bg1),var(--bg3));
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.app{
+  width:100%;
+  max-width:420px;
+  padding:30px;
+  text-align:center;
+}
+
+.title{
+  font-size:30px;
+  color:var(--primary);
+  text-shadow:var(--glow);
+}
+
+.mantra{margin:15px 0;font-size:18px;line-height:1.6;}
+.timer{margin:10px 0;font-size:18px;}
+
+.circle{
+  width:220px;height:220px;margin:30px auto;
+  border-radius:50%;
+  border:8px solid rgba(255,255,255,0.15);
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow:var(--glow);
+}
+
+.progress{
+  position:absolute;
+  inset:-8px;
+  border-radius:50%;
+  border:8px solid transparent;
+  border-top-color:var(--primary);
+  transition:.3s;
+}
+
+.count{
+  font-size:60px;
+  color:var(--primary);
+  text-shadow:var(--glow);
+}
+
+.stats{
+  display:flex;
+  gap:10px;
+  margin:20px 0;
+}
+
+.card{
+  flex:1;
+  background:var(--card-bg);
+  padding:12px;
+  border-radius:20px;
+  box-shadow:var(--glow);
+}
+
+.card span{
+  display:block;
+  font-size:20px;
+  color:var(--primary);
+}
+
+button{
+  width:100%;
+  padding:16px;
+  font-size:22px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#000;
+  cursor:pointer;
+  box-shadow:var(--glow);
+  margin-top:10px;
+}
+
+.themes{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.theme-btn{
+  flex:1;
+  padding:10px;
+  border-radius:15px;
+  border:none;
+  cursor:pointer;
+  font-size:16px;
+  box-shadow:var(--glow);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="title" id="title">🙏 राधा नाम जप 🙏</div>
+
+  <div class="mantra" id="mantra">
+    ॐ कृष्णाय वासुदेवाय हरये परमात्मने ॥<br>
+    प्रणतः क्लेशनाशाय गोविंदाय नमो नमः ॥
+  </div>
+
+  <div class="timer">⏱ <span id="time">00:00:00</span></div>
+
+  <div class="circle">
+    <div class="progress" id="progress"></div>
+    <div class="count" id="count">0</div>
+  </div>
+
+  <div class="stats">
+    <div class="card">🌸 Malas <span id="mala">0</span></div>
+    <div class="card">🔯 Total <span id="total">0</span></div>
+    <div class="card">📿 Today <span id="today">0</span></div>
+  </div>
+
+  <button onclick="addCount()">＋ Count</button>
+
+  <div class="themes">
+    <button class="theme-btn" onclick="setTheme('radha')">🌸 Radha</button>
+    <button class="theme-btn" onclick="setTheme('krishna')">🦚 Krishna</button>
+    <button class="theme-btn" onclick="setTheme('shiv')">🔱 Shiv</button>
+  </div>
+
+</div>
+
+<script>
+/* ================= RESET STATE ================= */
+let count=0,total=0,today=0,mala=0,seconds=0;
+
+const countEl=document.getElementById("count");
+const totalEl=document.getElementById("total");
+const todayEl=document.getElementById("today");
+const malaEl=document.getElementById("mala");
+const progress=document.getElementById("progress");
+const timeEl=document.getElementById("time");
+const title=document.getElementById("title");
+const mantra=document.getElementById("mantra");
+
+function resetAll(){
+  count=0; total=0; today=0; mala=0; seconds=0;
+  countEl.innerText=0;
+  totalEl.innerText=0;
+  todayEl.innerText=0;
+  malaEl.innerText=0;
+  progress.style.transform="rotate(0deg)";
+  timeEl.innerText="00:00:00";
+}
+
+/* ================= COUNT ================= */
+function addCount(){
+  count++; total++; today++;
+  if(count===108){ mala++; count=0; }
+  countEl.innerText=count;
+  totalEl.innerText=total;
+  todayEl.innerText=today;
+  malaEl.innerText=mala;
+  progress.style.transform=`rotate(${(count/108)*360}deg)`;
+}
+
+/* ================= TIMER ================= */
+setInterval(()=>{
+  seconds++;
+  let h=String(Math.floor(seconds/3600)).padStart(2,"0");
+  let m=String(Math.floor((seconds%3600)/60)).padStart(2,"0");
+  let s=String(seconds%60).padStart(2,"0");
+  timeEl.innerText=`${h}:${m}:${s}`;
+},1000);
+
+/* ================= THEMES (RESET ON CHANGE) ================= */
+function setTheme(mode){
+  resetAll();
+
+  const r=document.documentElement;
+
+  if(mode==="radha"){
+    r.style.setProperty("--bg1","#020024");
+    r.style.setProperty("--bg2","#4b0082");
+    r.style.setProperty("--bg3","#001f3f");
+    r.style.setProperty("--primary","#FFD700");
+    r.style.setProperty("--secondary","#ff9f00");
+    title.innerText="🙏 राधा नाम जप 🙏";
+    mantra.innerHTML="राधे राधे ❀";
+  }
+
+  if(mode==="krishna"){
+    r.style.setProperty("--bg1","#001f3f");
+    r.style.setProperty("--bg2","#003366");
+    r.style.setProperty("--bg3","#000814");
+    r.style.setProperty("--primary","#00ffd5");
+    r.style.setProperty("--secondary","#00b4ff");
+    title.innerText="🦚 कृष्ण नाम जप 🦚";
+    mantra.innerHTML="ॐ नमो भगवते वासुदेवाय";
+  }
+
+  if(mode==="shiv"){
+    r.style.setProperty("--bg1","#000000");
+    r.style.setProperty("--bg2","#0f2027");
+    r.style.setProperty("--bg3","#203a43");
+    r.style.setProperty("--primary","#00ff99");
+    r.style.setProperty("--secondary","#00cc88");
+    title.innerText="🔱 शिव नाम जप 🔱";
+    mantra.innerHTML="ॐ नमः शिवाय";
+  }
+}
+
+/* PAGE LOAD → ALWAYS RESET */
+resetAll();
+</script>
+
+</body>
+</html>
